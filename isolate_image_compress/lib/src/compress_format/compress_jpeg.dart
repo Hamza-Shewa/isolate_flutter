@@ -19,46 +19,46 @@ Future<Uint8List> compressJpegImage(Uint8List data,
   }
 
   // quality: The JPEG quality, in the range [0, 100] where 100 is highest quality.
-  const _minQuality = 0;
-  const _maxQuality = 100;
-  const _step = 10;
+  const minQuality = 0;
+  const maxQuality = 100;
+  const step = 10;
 
-  ImageResolution? _resolution = maxResolution ?? ImageResolution.uhd;
+  ImageResolution? resolution = maxResolution ?? ImageResolution.uhd;
 
-  Image? _image = decodeImage(data);
-  if (_image == null) {
+  Image? image = decodeImage(data);
+  if (image == null) {
     return Uint8List(0);
   } else {
-    List<int>? _data;
+    List<int>? data0;
     do {
-      if (_resolution != null) {
-        _image = _image!.resizeWithResolution(_resolution);
+      if (resolution != null) {
+        image = image!.resizeWithResolution(resolution);
         print(
-            'resizeWithResolution: ${_resolution.width} - ${_resolution.height}');
+            'resizeWithResolution: ${resolution.width} - ${resolution.height}');
       }
 
-      _data = encodeJpg(_image!, quality: _maxQuality);
-      print('encodeJpg - _maxQuality: ${_data.length}');
+      data0 = encodeJpg(image!, quality: maxQuality);
+      print('encodeJpg - _maxQuality: ${data0.length}');
 
-      if (_data.length > maxSize) {
-        _data = encodeJpg(_image, quality: _minQuality);
-        print('encodeJpg - _minQuality: ${_data.length}');
+      if (data0.length > maxSize) {
+        data0 = encodeJpg(image, quality: minQuality);
+        print('encodeJpg - _minQuality: ${data0.length}');
 
-        if (_data.length < maxSize) {
-          int _quality = _maxQuality;
+        if (data0.length < maxSize) {
+          int quality = maxQuality;
           do {
-            _quality -= _step;
-            _data = encodeJpg(_image, quality: _quality);
-            print('encodeJpg - _quality - $_quality: ${_data.length}');
-          } while (_data.length > maxSize && _quality > _minQuality);
+            quality -= step;
+            data0 = encodeJpg(image, quality: quality);
+            print('encodeJpg - _quality - $quality: ${data0.length}');
+          } while (data0.length > maxSize && quality > minQuality);
 
           break;
         }
       }
 
-      _resolution = _resolution?.prev();
-    } while (_resolution != null);
+      resolution = resolution?.prev();
+    } while (resolution != null);
 
-    return _data.length < maxSize ? Uint8List.fromList(_data) : Uint8List(0);
+    return data0.length < maxSize ? Uint8List.fromList(data0) : Uint8List(0);
   }
 }

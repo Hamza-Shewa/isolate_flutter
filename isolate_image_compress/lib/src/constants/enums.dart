@@ -1,5 +1,4 @@
 enum ImageFromType { file, path }
-enum ImageFormat { png, jpeg, gif, tga }
 
 class ImageResolution {
   final int width;
@@ -28,17 +27,17 @@ class ImageResolution {
   static const List<ImageResolution> all = [sd, hd, fhd, qhd, uhd, fuhd];
 
   ImageResolution? prev() {
-    final _index = all.indexOf(this);
-    if (_index > 0) {
-      return all[_index - 1];
+    final index = all.indexOf(this);
+    if (index > 0) {
+      return all[index - 1];
     }
     return null;
   }
 
   ImageResolution? next() {
-    final _index = all.indexOf(this);
-    if (_index < all.length - 1) {
-      return all[_index + 1];
+    final index = all.indexOf(this);
+    if (index < all.length - 1) {
+      return all[index + 1];
     }
     return null;
   }

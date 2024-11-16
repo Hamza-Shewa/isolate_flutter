@@ -39,33 +39,33 @@ class CompressParams {
 }
 
 Future<Uint8List> _compressImage(CompressParams params) async {
-  final _maxSize = params.maxSize;
+  final maxSize = params.maxSize;
 
   // read image data
-  final Uint8List _fileData =
+  final Uint8List fileData =
       params.imageData ?? params.image?.data ?? Uint8List(0);
 
-  if (_fileData.isEmpty || _maxSize == null || _fileData.length < _maxSize) {
+  if (fileData.isEmpty || maxSize == null || fileData.length < maxSize) {
     // not compression
-    return _fileData;
+    return fileData;
   } else {
-    final _maxResolution = params.maxResolution;
+    final maxResolution = params.maxResolution;
 
-    Decoder? _decoder =
+    Decoder? decoder =
         (params.format != null ? _getDecoder(params.format!) : null) ??
-            findDecoderForData(_fileData);
-    if (_decoder is JpegDecoder) {
-      return compressJpegImage(_fileData,
-          maxSize: _maxSize, maxResolution: _maxResolution);
-    } else if (_decoder is PngDecoder) {
-      return compressPngImage(_fileData,
-          maxSize: _maxSize, maxResolution: _maxResolution);
-    } else if (_decoder is TgaDecoder) {
-      return compressTgaImage(_fileData,
-          maxSize: _maxSize, maxResolution: _maxResolution);
-    } else if (_decoder is GifDecoder) {
-      return compressGifImage(_fileData,
-          maxSize: _maxSize, maxResolution: _maxResolution);
+            findDecoderForData(fileData);
+    if (decoder is JpegDecoder) {
+      return compressJpegImage(fileData,
+          maxSize: maxSize, maxResolution: maxResolution);
+    } else if (decoder is PngDecoder) {
+      return compressPngImage(fileData,
+          maxSize: maxSize, maxResolution: maxResolution);
+    } else if (decoder is TgaDecoder) {
+      return compressTgaImage(fileData,
+          maxSize: maxSize, maxResolution: maxResolution);
+    } else if (decoder is GifDecoder) {
+      return compressGifImage(fileData,
+          maxSize: maxSize, maxResolution: maxResolution);
     }
 
     return Uint8List(0);
@@ -74,7 +74,7 @@ Future<Uint8List> _compressImage(CompressParams params) async {
 
 Decoder? _getDecoder(ImageFormat format) {
   switch (format) {
-    case ImageFormat.jpeg:
+    case ImageFormat.jpg:
       return JpegDecoder();
     case ImageFormat.png:
       return PngDecoder();
@@ -99,12 +99,12 @@ extension CompressOnIsolateImage on IsolateImage {
       {int? maxSize,
       ImageResolution? maxResolution,
       ImageFormat? format}) async {
-    final CompressParams _params = CompressParams(
+    final CompressParams params = CompressParams(
         image: this,
         maxSize: maxSize,
         maxResolution: maxResolution,
         format: format);
-    return IsolateFlutter.createAndStart(_compressImage, _params,
+    return IsolateFlutter.createAndStart(_compressImage, params,
         debugLabel: 'isolate_image_compress');
   }
 }
@@ -117,12 +117,12 @@ extension CompressOnUint8List on Uint8List {
   /// - [format] - the image format you want to compress. (optional).
   Future<Uint8List?> compress(
       {int? maxSize, ImageResolution? resolution, ImageFormat? format}) async {
-    final CompressParams _params = CompressParams(
+    final CompressParams params = CompressParams(
         imageData: this,
         maxSize: maxSize,
         maxResolution: resolution,
         format: format);
-    return IsolateFlutter.createAndStart(_compressImage, _params,
+    return IsolateFlutter.createAndStart(_compressImage, params,
         debugLabel: 'isolate_image_compress');
   }
 }
@@ -135,12 +135,12 @@ extension CompressOnListInt on List<int> {
   /// - [format] - the image format you want to compress. (optional).
   Future<Uint8List?> compress(
       {int? maxSize, ImageResolution? resolution, ImageFormat? format}) async {
-    final CompressParams _params = CompressParams(
+    final CompressParams params = CompressParams(
         imageData: Uint8List.fromList(this),
         maxSize: maxSize,
         maxResolution: resolution,
         format: format);
-    return IsolateFlutter.createAndStart(_compressImage, _params,
+    return IsolateFlutter.createAndStart(_compressImage, params,
         debugLabel: 'isolate_image_compress');
   }
 }

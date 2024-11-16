@@ -19,45 +19,45 @@ Future<Uint8List> compressPngImage(Uint8List data,
   }
 
   // level: The compression level, in the range [0, 9] where 9 is the most compressed.
-  const _minLevel = 0;
-  const _maxLevel = 9;
-  const _step = 1;
+  const minLevel = 0;
+  const maxLevel = 9;
+  const step = 1;
 
-  ImageResolution? _resolution = maxResolution ?? ImageResolution.uhd;
+  ImageResolution? resolution = maxResolution ?? ImageResolution.uhd;
 
-  Image? _image = decodeImage(data);
-  if (_image == null) {
+  Image? image = decodeImage(data);
+  if (image == null) {
     return Uint8List(0);
   } else {
-    List<int>? _data;
+    List<int>? data0;
     do {
-      if (_resolution != null) {
-        _image = _image!.resizeWithResolution(_resolution);
+      if (resolution != null) {
+        image = image!.resizeWithResolution(resolution);
         print(
-            'resizeWithResolution: ${_resolution.width} - ${_resolution.height}');
+            'resizeWithResolution: ${resolution.width} - ${resolution.height}');
       }
 
-      _data = encodePng(_image!, level: _minLevel);
-      print('encodePNG - _minLevel: ${_data.length}');
+      data0 = encodePng(image!, level: minLevel);
+      print('encodePNG - _minLevel: ${data0.length}');
 
-      if (_data.length > maxSize) {
-        _data = encodePng(_image, level: _maxLevel);
-        print('encodePNG - _maxLevel: ${_data.length}');
+      if (data0.length > maxSize) {
+        data0 = encodePng(image, level: maxLevel);
+        print('encodePNG - _maxLevel: ${data0.length}');
 
-        if (_data.length < maxSize) {
-          int _level = _minLevel;
+        if (data0.length < maxSize) {
+          int level = minLevel;
           do {
-            _level += _step;
-            _data = encodePng(_image, level: _level);
-            print('encodePNG - _level - $_level: ${_data.length}');
-          } while (_data.length > maxSize && _level < _maxLevel);
+            level += step;
+            data0 = encodePng(image, level: level);
+            print('encodePNG - _level - $level: ${data0.length}');
+          } while (data0.length > maxSize && level < maxLevel);
 
           break;
         }
       }
-      _resolution = _resolution?.prev();
-    } while (_resolution != null);
+      resolution = resolution?.prev();
+    } while (resolution != null);
 
-    return _data.length < maxSize ? Uint8List.fromList(_data) : Uint8List(0);
+    return data0.length < maxSize ? Uint8List.fromList(data0) : Uint8List(0);
   }
 }

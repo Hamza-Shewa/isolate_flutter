@@ -18,28 +18,28 @@ Future<Uint8List> compressGifImage(Uint8List data,
     return data;
   }
 
-  ImageResolution? _resolution = maxResolution ?? ImageResolution.uhd;
+  ImageResolution? resolution = maxResolution ?? ImageResolution.uhd;
 
-  Image? _image = decodeImage(data);
-  if (_image == null) {
+  Image? image = decodeImage(data);
+  if (image == null) {
     return Uint8List(0);
   } else {
-    List<int>? _data;
+    List<int>? data0;
     do {
-      if (_resolution != null) {
-        _image = _image!.resizeWithResolution(_resolution);
+      if (resolution != null) {
+        image = image!.resizeWithResolution(resolution);
         print(
-            'resizeWithResolution: ${_resolution.width} - ${_resolution.height}');
+            'resizeWithResolution: ${resolution.width} - ${resolution.height}');
       }
-      _data = encodeGif(_image!);
-      print('encodeGif - length: ${_data.length}');
-      if (_data.length < maxSize) {
+      data0 = encodeGif(image!);
+      print('encodeGif - length: ${data0.length}');
+      if (data0.length < maxSize) {
         break;
       }
 
-      _resolution = _resolution?.prev();
-    } while (_resolution != null);
+      resolution = resolution?.prev();
+    } while (resolution != null);
 
-    return _data.length < maxSize ? Uint8List.fromList(_data) : Uint8List(0);
+    return data0.length < maxSize ? Uint8List.fromList(data0) : Uint8List(0);
   }
 }
